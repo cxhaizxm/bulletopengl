@@ -17,26 +17,24 @@
 # `AC_OUTPUT'
 
 AC_PREREQ([2.67])
-AC_INIT([bullet-opengl], [1.0], [consultit@katamail.com])
+AC_INIT([bulletopengl], [1.0], [consultit@katamail.com])
 AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([ch1/main.h])
+AC_CONFIG_SRCDIR([ch1/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_PREFIX_DEFAULT([/usr])
 #AM_SILENT_RULES
 
-#
-BGL_CPPFLAGS=""
+CXXFLAGSS_CMDLINE=${CXXFLAGS}
 # checks for programs.
-:${CXXFLAGS=""}
 AC_PROG_CXX
 AC_PROG_CC
 AC_LANG([C++])
-# default BGL CXXFLAGS (release mode)
-BGL_CXXFLAGS="-O3 -w -fmessage-length=0"
+# default CXXFLAGS (release mode)
+CXXFLAGS="-O3 -w -fmessage-length=0 ${CXXFLAGSS_CMDLINE}"
 
 # checks/sets options
 # BGL_DEVEL
@@ -52,17 +50,17 @@ AC_ARG_ENABLE([bgl-debug],
     [bgl_debug=${enableval}], [bgl_debug=no])
 if test "x${bgl_debug}" != xno; then
     AC_DEFINE([BGL_DEBUG],[1],[debug mode enabled])
-    BGL_CXXFLAGS="-O0 -g3 -Wall -fmessage-length=0"
+    CXXFLAGS="-O0 -g3 -Wall -fmessage-length=0 ${CXXFLAGSS_CMDLINE}"
 fi
 
-AC_SUBST(BGL_CPPFLAGS)
-AC_SUBST(BGL_CXXFLAGS)
-
+CPPFLAGS_CMDLINE=${CPPFLAGS}
 # Checks for header files.
+BULLET_CPPFLAGS="-I/usr/include/bullet -I/usr/local/include/bullet"
+CPPFLAGS="${BULLET_CPPFLAGS} ${CPPFLAGS_CMDLINE}"
 AC_CHECK_HEADERS([float.h limits.h memory.h stdlib.h sys/time.h])
 AX_CXX_HEADER_STDCXX_98
 required_headers=
-AC_CHECK_HEADER([bullet/btBulletDynamicsCommon.h],[],[required_headers=${required_headers}" Bullet2 "])
+AC_CHECK_HEADER([btBulletDynamicsCommon.h],[],[required_headers=${required_headers}" Bullet2 "])
 AC_CHECK_HEADER([GL/gl.h],[],[required_headers=${required_headers}" OpenGL "])
 AC_CHECK_HEADER([GL/glu.h],[],[required_headers=${required_headers}" Glu "])
 AC_CHECK_HEADER([GL/glut.h],[],[required_headers=${required_headers}" glut "])
@@ -75,13 +73,13 @@ if test -n "${required_headers}" ; then
 	----------------------------------------])
 fi
 
-# check for Bullet libraries
-CPPFLAGS_CMDLINE=${CPPFLAGS}
 LDFLAGS_CMDLINE=${LDFLAGS}
+LIBS_CMDLINE=${LIBS}
+# check for Bullet libraries
 AC_MSG_NOTICE([Looking for Bullet libraries...])
 BULLET_LDFLAGS=""
 BULLET_LIBS="-lBulletCollision -lBulletDynamics -lLinearMath -lBulletSoftBody"
-			
+
 LDFLAGS="${BULLET_LDFLAGS} ${LDFLAGS_CMDLINE}"
 LIBS="${BULLET_LIBS} ${LIBS}"
 required_libraries=yes
@@ -105,10 +103,8 @@ if test "x${required_libraries}" != xyes; then
 	Check 'config.log' for more information.
 	----------------------------------------])
 fi
-CPPFLAGS=${CPPFLAGS_CMDLINE}
-LDFLAGS=${LDFLAGS_CMDLINE}
 #
-# checks for libraries.
+# checks for other libraries.
 required_libraries=
 AC_SEARCH_LIBS([glDrawBuffer], [GL], [], [required_libraries=${required_libraries}" OpenGL "])
 AC_SEARCH_LIBS([gluProject], [GLU], [], [required_libraries=${required_libraries}" GLU "])
