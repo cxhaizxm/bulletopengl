@@ -65,7 +65,7 @@ required_headers=
 AC_CHECK_HEADER([btBulletDynamicsCommon.h],[],[required_headers=${required_headers}" Bullet2 "])
 AC_CHECK_HEADER([GL/gl.h],[],[required_headers=${required_headers}" OpenGL "])
 AC_CHECK_HEADER([GL/glu.h],[],[required_headers=${required_headers}" Glu "])
-AC_CHECK_HEADER([GL/glut.h],[],[required_headers=${required_headers}" glut "])
+AC_CHECK_HEADER([GL/freeglut.h],[],[required_headers=${required_headers}" Free glut "])
 if test -n "${required_headers}" ; then
 	AC_MSG_ERROR([
 	----------------------------------------
@@ -132,6 +132,7 @@ AC_CHECK_FUNCS([floor gettimeofday pow sqrt])
 
 AC_CONFIG_FILES([
 		Makefile
+		src/Makefile
 		])
 
 AC_OUTPUT

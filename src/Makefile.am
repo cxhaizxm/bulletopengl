@@ -1,12 +1,19 @@
 ACLOCAL_AMFLAGS = -I m4
 
 noinst_HEADERS = \
-		ch1/BulletOpenGLApplication.h \
-		ch1/FreeGLUTCallbacks.h	
+		FreeGLUTCallbacks.h	\
+		Ch1/BulletOpenGLApplication.h \
+		Ch2.1/BulletOpenGLApplication.h
 
 bin_PROGRAMS = \
-		Ch1
+		ch1 ch2.1
 
-Ch1_SOURCES = \
-		ch1/BulletOpenGLApplication.cpp \
-		ch1/main.cpp
+ch1_SOURCES = \
+		Ch1/BulletOpenGLApplication.cpp \
+		main.cpp
+
+ch2_1_SOURCES = \
+		Ch2.1/BulletOpenGLApplication.cpp \
+		main.cpp
+
+		
