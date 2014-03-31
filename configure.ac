@@ -23,17 +23,19 @@ LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([ch1/main.cpp])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_SRCDIR([src/ch1/main.cpp])
+:${CXXFLAGS=""}
+AC_CONFIG_HEADERS([src/config.h])
 AC_PREFIX_DEFAULT([/usr])
-#AM_SILENT_RULES
 
+# checks for programs.
+:${CXXFLAGS=""}
+AC_PROG_CXX
+AC_LANG([C++])
+#AM_SILENT_RULES
+#
 CXXFLAGSS_CMDLINE=${CXXFLAGS}
 # checks for programs.
-AC_PROG_CXX
-AC_PROG_CC
-AC_LANG([C++])
-# default CXXFLAGS (release mode)
 CXXFLAGS="-O3 -w -fmessage-length=0 ${CXXFLAGSS_CMDLINE}"
 
 # checks/sets options
