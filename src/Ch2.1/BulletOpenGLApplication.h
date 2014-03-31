@@ -1,16 +1,16 @@
 #ifndef _BULLETOPENGLAPP_H_
 #define _BULLETOPENGLAPP_H_
 
-#include <Windows.h>
-#include <GL/GL.h>
+#include <GL/gl.h>
 #include <GL/freeglut.h>
 
-/*ADD*/	#include "BulletDynamics/Dynamics/btDynamicsWorld.h"
+#include <bullet/BulletDynamics/Dynamics/btDynamicsWorld.h>
 
-class BulletOpenGLApplication {
+class BulletOpenGLApplication
+{
 public:
 	BulletOpenGLApplication();
-	~BulletOpenGLApplication();
+	virtual ~BulletOpenGLApplication();
 	void Initialize();
 	// FreeGLUT callbacks //
 	virtual void Keyboard(unsigned char key, int x, int y);
@@ -24,18 +24,18 @@ public:
 	virtual void Motion(int x, int y);
 	virtual void Display();
 
-/*ADD*/		// camera functions
-/*ADD*/		void UpdateCamera();
-/*ADD*/	
-/*ADD*/	protected:
-/*ADD*/		// camera control
-/*ADD*/		btVector3 m_cameraPosition; // the camera's current position
-/*ADD*/		btVector3 m_cameraTarget;	 // the camera's lookAt target
-/*ADD*/		float m_nearPlane; // minimum distance the camera will render
-/*ADD*/		float m_farPlane; // farthest distance the camera will render
-/*ADD*/		btVector3 m_upVector; // keeps the camera rotated correctly
-/*ADD*/	
-/*ADD*/		int m_screenWidth;
-/*ADD*/		int m_screenHeight;
+	// camera functions
+	void UpdateCamera();
+
+protected:
+	// camera control
+	btVector3 m_cameraPosition; // the camera's current position
+	btVector3 m_cameraTarget;	 // the camera's lookAt target
+	float m_nearPlane; // minimum distance the camera will render
+	float m_farPlane; // farthest distance the camera will render
+	btVector3 m_upVector; // keeps the camera rotated correctly
+
+	int m_screenWidth;
+	int m_screenHeight;
 };
 #endif

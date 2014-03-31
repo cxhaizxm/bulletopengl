@@ -62,7 +62,7 @@ int glutmain(int argc, char **argv, int width, int height, const char* title,
 	glutInitWindowSize(width, height);
 	glutCreateWindow(title);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
-			GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+	GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	// perform custom initialization our of application
 	g_pApp->Initialize();
