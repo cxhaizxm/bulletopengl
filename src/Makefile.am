@@ -3,6 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(top_srcdir)/src/application
 
 noinst_HEADERS = \
+		application/BasicDemo.h \
 		application/BulletOpenGLApplication.h \
 		application/FreeGLUTCallbacks.h
 
@@ -11,6 +12,7 @@ noinst_LTLIBRARIES = \
 		libapplication.la
 		
 libapplication_la_SOURCES = \
+		application/BasicDemo.cpp \
 		application/BulletOpenGLApplication.cpp
 
 #programs

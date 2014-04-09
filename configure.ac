@@ -36,7 +36,7 @@ AC_LANG([C++])
 #
 CXXFLAGSS_CMDLINE=${CXXFLAGS}
 # checks for programs.
-CXXFLAGS="-O3 -w -fmessage-length=0 ${CXXFLAGSS_CMDLINE}"
+CXXFLAGS="-std=c++11 -O3 -w -fmessage-length=0 ${CXXFLAGSS_CMDLINE}"
 
 # checks/sets options
 # BGL_DEVEL
@@ -52,7 +52,7 @@ AC_ARG_ENABLE([bgl-debug],
     [bgl_debug=${enableval}], [bgl_debug=no])
 if test "x${bgl_debug}" != xno; then
     AC_DEFINE([BGL_DEBUG],[1],[debug mode enabled])
-    CXXFLAGS="-O0 -g3 -Wall -fmessage-length=0 ${CXXFLAGSS_CMDLINE}"
+    CXXFLAGS="-std=c++11 -O0 -g3 -Wall -fmessage-length=0 ${CXXFLAGSS_CMDLINE}"
 fi
 
 CPPFLAGS_CMDLINE=${CPPFLAGS}
