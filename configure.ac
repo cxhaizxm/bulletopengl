@@ -23,7 +23,7 @@ LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([src/Ch1/main.cpp])
+AC_CONFIG_SRCDIR([src/main.cpp])
 :${CXXFLAGS=""}
 AC_CONFIG_HEADERS([src/config.h])
 AC_PREFIX_DEFAULT([/usr])

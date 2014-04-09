@@ -1,22 +1,24 @@
 ACLOCAL_AMFLAGS = -I m4
 
+AM_CPPFLAGS = -I$(top_srcdir)/src/application
+
 noinst_HEADERS = \
-		Ch1/BulletOpenGLApplication.h \
-		Ch2/BulletOpenGLApplication.h
+		application/BulletOpenGLApplication.h \
+		application/FreeGLUTCallbacks.h
 
-bin_PROGRAMS = \
-		ch1 ch2
+#ltlibraries
+noinst_LTLIBRARIES = \
+		libapplication.la
+		
+libapplication_la_SOURCES = \
+		application/BulletOpenGLApplication.cpp
 
-ch1_CPPFLAGS=
-ch1_SOURCES = \
-		Ch1/BulletOpenGLApplication.cpp \
-		Ch1/FreeGLUTCallbacks.h	\
-		Ch1/main.cpp
+#programs
+bin_PROGRAMS = bulletopengl
 
-ch2_CPPFLAGS=
-ch2_SOURCES = \
-		Ch2/BulletOpenGLApplication.cpp \
-		Ch2/FreeGLUTCallbacks.h	\
-		Ch2/main.cpp
-
+bulletopengl_LDADD = \
+		libapplication.la
+		
+bulletopengl_SOURCES = \
+		main.cpp
 		
