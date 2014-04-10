@@ -5,6 +5,7 @@
 #include <GL/freeglut.h>
 
 #include <bullet/BulletDynamics/Dynamics/btDynamicsWorld.h>
+#include "OpenGLMotionState.h"
 
 class BulletOpenGLApplication
 {
@@ -24,6 +25,12 @@ public:
 	virtual void Motion(int x, int y);
 	virtual void Display();
 
+	// rendering. Can be overrideen by derived classes
+	virtual void RenderScene();
+
+	// scene updating. Can be overridden by derived classes
+	virtual void UpdateScene(float dt);
+
 	// physics functions. Can be overriden by derived classes (like BasicDemo)
 	virtual void InitializePhysics()
 	{
@@ -38,7 +45,7 @@ public:
 	void ZoomCamera(float distance);
 
 	// drawing functions
-	void DrawBox(const btVector3 &halfSize,
+	void DrawBox(btScalar* transform, const btVector3 &halfSize,
 			const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));
 
 protected:
@@ -61,5 +68,11 @@ protected:
 	btCollisionDispatcher* m_pDispatcher;
 	btConstraintSolver* m_pSolver;
 	btDynamicsWorld* m_pWorld;
+
+	// our custom motion state
+	OpenGLMotionState* m_pMotionState;
+
+	// a simple clock for counting time
+	btClock m_clock;
 };
 #endif

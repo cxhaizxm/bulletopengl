@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/application
 
 noinst_HEADERS = \
 		application/BasicDemo.h \
+		application/OpenGLMotionState.h \
 		application/BulletOpenGLApplication.h \
 		application/FreeGLUTCallbacks.h
 
