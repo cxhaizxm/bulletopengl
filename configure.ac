@@ -23,9 +23,9 @@ LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_SRCDIR([application/main.cpp])
 :${CXXFLAGS=""}
-AC_CONFIG_HEADERS([src/config.h])
+AC_CONFIG_HEADERS([application/config.h])
 AC_PREFIX_DEFAULT([/usr])
 
 # checks for programs.
@@ -132,7 +132,8 @@ AC_CHECK_FUNCS([floor gettimeofday pow sqrt])
 
 AC_CONFIG_FILES([
 		Makefile
-		src/Makefile
+		application/Makefile
+		panda3d/Makefile
 		])
 
 AC_OUTPUT
