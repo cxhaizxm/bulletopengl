@@ -1,3 +1,3 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = application panda3d 
+SUBDIRS = application application_p3d 

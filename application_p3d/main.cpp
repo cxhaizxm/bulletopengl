@@ -1,6 +1,10 @@
+#include "BulletLocal/common.h"
+#include "BulletLocal/BulletWorld.h"
 #include <pandaFramework.h>
 #include <pandaSystem.h>
 #include <load_prc_file.h>
+
+using namespace ely;
 
 static std::string baseDir("/REPOSITORY/KProjects/WORKSPACE/Ely/ely/");
 
@@ -38,6 +42,7 @@ int main(int argc, char *argv[])
 	trackball->set_hpr(0, 15, 0);
 
 	///here is room for your own code
+	BulletWorld world(LVecBase3fTobtVector3(LVecBase3f(0.0, 0.0, 9.8)));
 
 	//do the main loop, equal to run() in python
 	framework.main_loop();
