@@ -6,7 +6,8 @@ noinst_HEADERS = \
 	BasicDemo.h \
 	OpenGLMotionState.h \
 	BulletOpenGLApplication.h \
-	FreeGLUTCallbacks.h
+	FreeGLUTCallbacks.h \
+	GameObject.h
 
 nodist_noinst_HEADERS = \
 	config.h
@@ -17,7 +18,8 @@ noinst_LTLIBRARIES = \
 		
 libapplication_la_SOURCES = \
 	BasicDemo.cpp \
-	BulletOpenGLApplication.cpp
+	BulletOpenGLApplication.cpp \
+	GameObject.cpp
 
 #programs
 bin_PROGRAMS = bulletopengl

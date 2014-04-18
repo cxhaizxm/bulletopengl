@@ -1,7 +1,5 @@
 #include "BulletOpenGLApplication.h"
 
-#include <bullet/btBulletDynamicsCommon.h>
-
 class BasicDemo: public BulletOpenGLApplication
 {
 public:
