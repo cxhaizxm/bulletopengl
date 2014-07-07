@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(top_srcdir)/application_p3d -I/usr/include/panda3d \
 	-I/usr/include/python2.7 -I/usr/include/eigen3
 	
-AM_LDFLAGS = -L/usr/lib/panda3d
+AM_LDFLAGS = -L/usr/lib/panda3d -L/usr/lib64/panda3d
 
 nodist_noinst_HEADERS = \
 	BulletLocal/common.h \
