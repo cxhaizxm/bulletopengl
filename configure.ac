@@ -133,7 +133,6 @@ AC_CHECK_FUNCS([floor gettimeofday pow sqrt])
 AC_CONFIG_FILES([
 		Makefile
 		application/Makefile
-		application_p3d/Makefile
 		])
 
 AC_OUTPUT
