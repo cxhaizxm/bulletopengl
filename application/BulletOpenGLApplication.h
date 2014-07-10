@@ -6,6 +6,8 @@
 
 #include <bullet/btBulletDynamicsCommon.h>
 #include "OpenGLMotionState.h"
+// Our custom debug renderer
+#include "DebugDrawer.h"
 #include "GameObject.h"
 #include <vector>
 
@@ -86,5 +88,7 @@ protected:
 
 	// an array of our game objects
 	GameObjects m_objects;
+	// debug renderer
+	DebugDrawer* m_pDebugDrawer;
 };
 #endif
