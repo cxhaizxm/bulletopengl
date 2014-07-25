@@ -14,6 +14,15 @@
 // a convenient typedef to reference an STL vector of GameObjects
 typedef std::vector<GameObject*> GameObjects;
 
+// struct to store our raycasting results
+struct RayResult
+{
+
+	btRigidBody* pBody;
+
+	btVector3 hitPoint;
+};
+
 class BulletOpenGLApplication
 {
 public:
@@ -61,6 +70,17 @@ public:
 			const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f),
 			const btVector3 &initialPosition = btVector3(0.0f, 0.0f, 0.0f),
 			const btQuaternion &initialRotation = btQuaternion(0, 0, 1, 1));
+
+	void ShootBox(const btVector3 &direction);
+
+	void DestroyGameObject(btRigidBody* pBody);
+
+	// picking functions
+
+	btVector3 GetPickingRay(int x, int y);
+
+	bool Raycast(const btVector3 &startPosition, const btVector3 &direction,
+			RayResult &output);
 
 protected:
 	// camera control
