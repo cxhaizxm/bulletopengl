@@ -17,9 +17,7 @@ typedef std::vector<GameObject*> GameObjects;
 // struct to store our raycasting results
 struct RayResult
 {
-
 	btRigidBody* pBody;
-
 	btVector3 hitPoint;
 };
 
@@ -72,15 +70,16 @@ public:
 			const btQuaternion &initialRotation = btQuaternion(0, 0, 1, 1));
 
 	void ShootBox(const btVector3 &direction);
-
 	void DestroyGameObject(btRigidBody* pBody);
 
 	// picking functions
-
 	btVector3 GetPickingRay(int x, int y);
-
 	bool Raycast(const btVector3 &startPosition, const btVector3 &direction,
 			RayResult &output);
+
+	// constraint functions
+	void CreatePickingConstraint(int x, int y);
+	void RemovePickingConstraint();
 
 protected:
 	// camera control
@@ -90,7 +89,7 @@ protected:
 	float m_farPlane; // farthest distance the camera will render
 	btVector3 m_upVector; // keeps the camera rotated correctly
 	float m_cameraDistance; // distance from the camera to its target
-	float m_cameraPitch; // pitch of the camera
+	float m_cameraPitch; // pitch of the camera 
 	float m_cameraYaw; // yaw of the camera
 
 	int m_screenWidth;
@@ -108,7 +107,14 @@ protected:
 
 	// an array of our game objects
 	GameObjects m_objects;
+
 	// debug renderer
 	DebugDrawer* m_pDebugDrawer;
+
+	// constraint variables
+	btRigidBody* m_pPickedBody;				// the body we picked up
+	btTypedConstraint* m_pPickConstraint;// the constraint the body is attached to
+	btScalar m_oldPickingDist;// the distance from the camera to the hit point (so we can move the object up, down, left and right from our view)
+
 };
 #endif

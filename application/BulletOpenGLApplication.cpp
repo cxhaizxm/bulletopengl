@@ -9,7 +9,7 @@ BulletOpenGLApplication::BulletOpenGLApplication() :
 				15.0f), m_cameraPitch(20.0f), m_cameraYaw(0.0f), m_upVector(
 				0.0f, 1.0f, 0.0f), m_nearPlane(1.0f), m_farPlane(1000.0f), m_pBroadphase(
 				0), m_pCollisionConfiguration(0), m_pDispatcher(0), m_pSolver(
-				0), m_pWorld(0)
+				0), m_pWorld(0), m_pPickedBody(0), m_pPickConstraint(0)
 {
 }
 
@@ -69,7 +69,6 @@ void BulletOpenGLApplication::Initialize()
 	// add the debug drawer to the world
 	m_pWorld->setDebugDrawer(m_pDebugDrawer);
 }
-
 void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y)
 {
 	// This function is called by FreeGLUT whenever
@@ -88,12 +87,12 @@ void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y)
 		// toggle wireframe debug drawing
 		m_pDebugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
 		break;
+
 	case 'b':
 		// toggle AABB debug drawing
 		m_pDebugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
 		break;
 	case 'd':
-
 	{
 		// create a temp object to store the raycast result
 		RayResult result;
@@ -101,7 +100,6 @@ void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y)
 		if (!Raycast(m_cameraPosition, GetPickingRay(x, y), result))
 			return; // return if the test failed
 		// destroy the corresponding game object
-
 		DestroyGameObject(result.pBody);
 		break;
 	}
@@ -182,26 +180,57 @@ void BulletOpenGLApplication::Mouse(int button, int state, int x, int y)
 {
 	switch (button)
 	{
+	case 0:  // left mouse button
+	{
+		if (state == 0)
+		{ // button down
+		  // create the picking constraint when we click the LMB
+			CreatePickingConstraint(x, y);
+		}
+		else
+		{ // button up
+		  // remove the picking constraint when we release the LMB
+			RemovePickingConstraint();
+		}
+		break;
+	}
 	case 2: // right mouse button
-
 	{
 		if (state == 0)
 		{ // pressed down
 		  // shoot a box
-
 			ShootBox(GetPickingRay(x, y));
 		}
-
 		break;
 	}
-
 	}
 }
+
 void BulletOpenGLApplication::PassiveMotion(int x, int y)
 {
 }
+
 void BulletOpenGLApplication::Motion(int x, int y)
 {
+	// did we pick a body with the LMB?
+	if (m_pPickedBody)
+	{
+		btGeneric6DofConstraint* pickCon =
+				static_cast<btGeneric6DofConstraint*>(m_pPickConstraint);
+		if (!pickCon)
+			return;
+
+		// use another picking ray to get the target direction
+		btVector3 dir = GetPickingRay(x, y) - m_cameraPosition;
+		dir.normalize();
+
+		// use the same distance as when we originally picked the object
+		dir *= m_oldPickingDist;
+		btVector3 newPivot = m_cameraPosition + dir;
+
+		// set the position of the constraint
+		pickCon->getFrameOffsetA().setOrigin(newPivot);
+	}
 }
 void BulletOpenGLApplication::Display()
 {
@@ -230,21 +259,21 @@ void BulletOpenGLApplication::UpdateCamera()
 	// set it to '1'
 	glLoadIdentity();
 
-	// our values represent the angles in degrees, but 3D
+	// our values represent the angles in degrees, but 3D 
 	// math typically demands angular values are in radians.
 	float pitch = m_cameraPitch * RADIANS_PER_DEGREE;
 	float yaw = m_cameraYaw * RADIANS_PER_DEGREE;
 
-	// create a quaternion defining the angular rotation
+	// create a quaternion defining the angular rotation 
 	// around the up vector
 	btQuaternion rotation(m_upVector, yaw);
 
-	// set the camera's position to 0,0,0, then move the 'z'
+	// set the camera's position to 0,0,0, then move the 'z' 
 	// position to the current value of m_cameraDistance.
 	btVector3 cameraPosition(0, 0, 0);
 	cameraPosition[2] = -m_cameraDistance;
 
-	// create a Bullet Vector3 to represent the camera
+	// create a Bullet Vector3 to represent the camera 
 	// position and scale it up if its value is too small.
 	btVector3 forward(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 	if (forward.length2() < SIMD_EPSILON)
@@ -252,21 +281,21 @@ void BulletOpenGLApplication::UpdateCamera()
 		forward.setValue(1.f, 0.f, 0.f);
 	}
 
-	// figure out the 'right' vector by using the cross
+	// figure out the 'right' vector by using the cross 
 	// product on the 'forward' and 'up' vectors
 	btVector3 right = m_upVector.cross(forward);
 
 	// create a quaternion that represents the camera's roll
 	btQuaternion roll(right, -pitch);
 
-	// turn the rotation (around the Y-axis) and roll (around
-	// the forward axis) into transformation matrices and
-	// apply them to the camera position. This gives us the
+	// turn the rotation (around the Y-axis) and roll (around 
+	// the forward axis) into transformation matrices and 
+	// apply them to the camera position. This gives us the 
 	// final position
 	cameraPosition = btMatrix3x3(rotation) * btMatrix3x3(roll) * cameraPosition;
 
-	// save our new position in the member variable, and
-	// shift it relative to the target position (so that we
+	// save our new position in the member variable, and 
+	// shift it relative to the target position (so that we 
 	// orbit it)
 	m_cameraPosition[0] = cameraPosition.getX();
 	m_cameraPosition[1] = cameraPosition.getY();
@@ -298,8 +327,8 @@ void BulletOpenGLApplication::DrawBox(const btVector3 &halfSize)
 							halfWidth, -halfHeight, -halfDepth), btVector3(
 							-halfWidth, -halfHeight, -halfDepth) };
 
-	// create the indexes for each triangle, using the
-	// vertices above. Make it static so we don't waste
+	// create the indexes for each triangle, using the 
+	// vertices above. Make it static so we don't waste 
 	// processing time recreating it over and over again
 	static int indices[36] =
 	{ 0, 1, 2, 3, 2, 1, 4, 0, 6, 6, 0, 2, 5, 1, 4, 4, 1, 0, 7, 3, 1, 7, 1, 5, 5,
@@ -308,7 +337,7 @@ void BulletOpenGLApplication::DrawBox(const btVector3 &halfSize)
 	// start processing vertices as triangles
 	glBegin(GL_TRIANGLES);
 
-	// increment the loop by 3 each time since we create a
+	// increment the loop by 3 each time since we create a 
 	// triangle with 3 vertices at a time.
 
 	for (int i = 0; i < 36; i += 3)
@@ -317,13 +346,13 @@ void BulletOpenGLApplication::DrawBox(const btVector3 &halfSize)
 		// on the index values set above
 		// use const references so we don't copy the object
 		// (a good rule of thumb is to never allocate/deallocate
-		// memory during *every* render/update call. This should
+		// memory during *every* render/update call. This should 
 		// only happen sporadically)
 		const btVector3 &vert1 = vertices[indices[i]];
 		const btVector3 &vert2 = vertices[indices[i + 1]];
 		const btVector3 &vert3 = vertices[indices[i + 2]];
 
-		// create a normal that is perpendicular to the
+		// create a normal that is perpendicular to the 
 		// face (use the cross product)
 		btVector3 normal = (vert3 - vert1).cross(vert2 - vert1);
 		normal.normalize();
@@ -383,6 +412,7 @@ void BulletOpenGLApplication::RenderScene()
 		// get data from the object and draw it
 		DrawShape(transform, pObj->GetShape(), pObj->GetColor());
 	}
+
 	// after rendering all game objects, perform debug rendering
 	// Bullet will figure out what needs to be drawn then call to
 	// our DebugDrawer class to do the rendering for us
@@ -395,7 +425,7 @@ void BulletOpenGLApplication::UpdateScene(float dt)
 	if (m_pWorld)
 	{
 		// step the simulation through time. This is called
-		// every update and the amount of elasped time was
+		// every update and the amount of elasped time was 
 		// determined back in ::Idle() by our clock object.
 		m_pWorld->stepSimulation(dt);
 	}
@@ -460,14 +490,14 @@ btVector3 BulletOpenGLApplication::GetPickingRay(int x, int y)
 	float tanFov = 1.0f / m_nearPlane;
 	float fov = btScalar(2.0) * btAtan(tanFov);
 
-	// get a ray pointing forward from the
+	// get a ray pointing forward from the 
 	// camera and extend it to the far plane
 	btVector3 rayFrom = m_cameraPosition;
 	btVector3 rayForward = (m_cameraTarget - m_cameraPosition);
 	rayForward.normalize();
 	rayForward *= m_farPlane;
 
-	// find the horizontal and vertical vectors
+	// find the horizontal and vertical vectors 
 	// relative to the current camera view
 	btVector3 ver = m_upVector;
 	btVector3 hor = rayForward.cross(ver);
@@ -527,7 +557,6 @@ bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition,
 
 	// did we hit something?
 	if (rayCallback.hasHit())
-
 	{
 		// if so, get the rigid body we hit
 		btRigidBody* pBody = (btRigidBody*) btRigidBody::upcast(
@@ -535,7 +564,7 @@ bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition,
 		if (!pBody)
 			return false;
 
-		// prevent us from picking objects
+		// prevent us from picking objects 
 		// like the ground plane
 		if (pBody->isStaticObject() || pBody->isKinematicObject())
 			return false;
@@ -552,8 +581,8 @@ bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition,
 
 void BulletOpenGLApplication::DestroyGameObject(btRigidBody* pBody)
 {
-	// we need to search through the objects in order to
-	// find the corresponding iterator (can only erase from
+	// we need to search through the objects in order to 
+	// find the corresponding iterator (can only erase from 
 	// an std::vector by passing an iterator)
 	for (GameObjects::iterator iter = m_objects.begin();
 			iter != m_objects.end(); ++iter)
@@ -571,4 +600,81 @@ void BulletOpenGLApplication::DestroyGameObject(btRigidBody* pBody)
 			return;
 		}
 	}
+}
+
+void BulletOpenGLApplication::CreatePickingConstraint(int x, int y)
+{
+	if (!m_pWorld)
+		return;
+
+	// perform a raycast and return if it fails
+	RayResult output;
+	if (!Raycast(m_cameraPosition, GetPickingRay(x, y), output))
+		return;
+
+	// store the body for future reference
+	m_pPickedBody = output.pBody;
+	// prevent the picked object from falling asleep
+	m_pPickedBody->setActivationState(DISABLE_DEACTIVATION);
+	// get the hit position relative to the body we hit
+	btVector3 localPivot = m_pPickedBody->getCenterOfMassTransform().inverse()
+			* output.hitPoint;
+	// create a transform for the pivot point
+	btTransform pivot;
+	pivot.setIdentity();
+	pivot.setOrigin(localPivot);
+	// create our constraint object
+	btGeneric6DofConstraint* dof6 = new btGeneric6DofConstraint(*m_pPickedBody,
+			pivot, true);
+	bool bLimitAngularMotion = true;
+	if (bLimitAngularMotion)
+	{
+		dof6->setAngularLowerLimit(btVector3(0, 0, 0));
+		dof6->setAngularUpperLimit(btVector3(0, 0, 0));
+	}
+	// add the constraint to the world
+	m_pWorld->addConstraint(dof6, true);
+	// store a pointer to our constraint
+	m_pPickConstraint = dof6;
+	// define the 'strength' of our constraint (each axis)
+	float cfm = 0.5f;
+	dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 0);
+	dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 1);
+	dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 2);
+	dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 3);
+	dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 4);
+	dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 5);
+
+	// define the 'error reduction' of our constraint (each axis)
+	float erp = 0.5f;
+	dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 0);
+	dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 1);
+	dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 2);
+	dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 3);
+	dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 4);
+	dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 5);
+
+	// save this data for future reference
+	m_oldPickingDist = (output.hitPoint - m_cameraPosition).length();
+}
+
+void BulletOpenGLApplication::RemovePickingConstraint()
+{
+	// exit in erroneous situations
+	if (!m_pPickConstraint || !m_pWorld)
+		return;
+
+	// remove the constraint from the world
+	m_pWorld->removeConstraint(m_pPickConstraint);
+
+	// delete the constraint object
+	delete m_pPickConstraint;
+
+	// reactivate the body
+	m_pPickedBody->forceActivationState(ACTIVE_TAG);
+	m_pPickedBody->setDeactivationTime(0.f);
+
+	// clear the pointers
+	m_pPickConstraint = 0;
+	m_pPickedBody = 0;
 }
