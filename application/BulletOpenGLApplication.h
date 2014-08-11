@@ -5,9 +5,13 @@
 #include <GL/freeglut.h>
 
 #include <bullet/btBulletDynamicsCommon.h>
+
+// include our custom Motion State object
 #include "OpenGLMotionState.h"
+
 // Our custom debug renderer
 #include "DebugDrawer.h"
+
 #include "GameObject.h"
 #include <vector>
 #include <set>
@@ -78,7 +82,6 @@ public:
 
 	void ShootBox(const btVector3 &direction);
 	void DestroyGameObject(btRigidBody* pBody);
-
 	GameObject* FindGameObject(btRigidBody* pBody);
 
 	// picking functions
@@ -92,9 +95,7 @@ public:
 
 	// collision event functions
 	void CheckForCollisionEvents();
-
 	virtual void CollisionEvent(btRigidBody* pBody0, btRigidBody * pBody1);
-
 	virtual void SeparationEvent(btRigidBody * pBody0, btRigidBody * pBody1);
 
 protected:

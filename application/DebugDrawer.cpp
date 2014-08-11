@@ -3,9 +3,9 @@
 
 void DebugDrawer::drawLine(const btVector3 &from, const btVector3 &to,
 		const btVector3 &color)
-
 {
 	// draws a simple line of pixels between points.
+
 	// use the GL_LINES primitive to draw lines
 	glBegin(GL_LINES);
 	glColor3f(color.getX(), color.getY(), color.getZ());

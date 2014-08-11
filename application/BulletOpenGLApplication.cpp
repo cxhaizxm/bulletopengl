@@ -201,6 +201,7 @@ void BulletOpenGLApplication::Mouse(int button, int state, int x, int y)
 		  // shoot a box
 			ShootBox(GetPickingRay(x, y));
 		}
+
 		break;
 	}
 	}
@@ -617,15 +618,19 @@ void BulletOpenGLApplication::CreatePickingConstraint(int x, int y)
 
 	// store the body for future reference
 	m_pPickedBody = output.pBody;
+
 	// prevent the picked object from falling asleep
 	m_pPickedBody->setActivationState(DISABLE_DEACTIVATION);
-	// get the hit position relative to the body we hit
+
+	// get the hit position relative to the body we hit 
 	btVector3 localPivot = m_pPickedBody->getCenterOfMassTransform().inverse()
 			* output.hitPoint;
+
 	// create a transform for the pivot point
 	btTransform pivot;
 	pivot.setIdentity();
 	pivot.setOrigin(localPivot);
+
 	// create our constraint object
 	btGeneric6DofConstraint* dof6 = new btGeneric6DofConstraint(*m_pPickedBody,
 			pivot, true);
@@ -635,10 +640,13 @@ void BulletOpenGLApplication::CreatePickingConstraint(int x, int y)
 		dof6->setAngularLowerLimit(btVector3(0, 0, 0));
 		dof6->setAngularUpperLimit(btVector3(0, 0, 0));
 	}
+
 	// add the constraint to the world
 	m_pWorld->addConstraint(dof6, true);
+
 	// store a pointer to our constraint
 	m_pPickConstraint = dof6;
+
 	// define the 'strength' of our constraint (each axis)
 	float cfm = 0.5f;
 	dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 0);
@@ -696,7 +704,7 @@ void BulletOpenGLApplication::CheckForCollisionEvents()
 		btPersistentManifold* pManifold =
 				m_pDispatcher->getManifoldByIndexInternal(i);
 
-		// ignore manifolds that have
+		// ignore manifolds that have 
 		// no contact points.
 		if (pManifold->getNumContacts() > 0)
 		{
@@ -734,7 +742,7 @@ void BulletOpenGLApplication::CheckForCollisionEvents()
 
 	// this handy function gets the difference beween
 	// two sets. It takes the difference between
-	// collision pairs from the last update, and this
+	// collision pairs from the last update, and this 
 	// update and pushes them into the removed pairs list
 	std::set_difference(m_pairsLastUpdate.begin(), m_pairsLastUpdate.end(),
 			pairsThisUpdate.begin(), pairsThisUpdate.end(),
@@ -758,33 +766,11 @@ void BulletOpenGLApplication::CheckForCollisionEvents()
 void BulletOpenGLApplication::CollisionEvent(btRigidBody * pBody0,
 		btRigidBody * pBody1)
 {
-	// find the two colliding objects
-	GameObject* pObj0 = FindGameObject(pBody0);
-	GameObject* pObj1 = FindGameObject(pBody1);
-
-	// exit if we didn't find anything
-	if (!pObj0 || !pObj1)
-		return;
-
-	// set their colors to white
-	pObj0->SetColor(btVector3(1.0, 1.0, 1.0));
-	pObj1->SetColor(btVector3(1.0, 1.0, 1.0));
 }
 
 void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0,
 		btRigidBody * pBody1)
 {
-	// get the two separating objects
-	GameObject* pObj0 = FindGameObject((btRigidBody*) pBody0);
-	GameObject* pObj1 = FindGameObject((btRigidBody*) pBody1);
-
-	// exit if we didn't find anything
-	if (!pObj0 || !pObj1)
-		return;
-
-	// set their colors to black
-	pObj0->SetColor(btVector3(0.0, 0.0, 0.0));
-	pObj1->SetColor(btVector3(0.0, 0.0, 0.0));
 }
 
 GameObject* BulletOpenGLApplication::FindGameObject(btRigidBody* pBody)
