@@ -1,5 +1,6 @@
 #ifndef _DEBUG_DRAWER_H
 #define _DEBUG_DRAWER_H
+
 #include <bullet/LinearMath/btIDebugDraw.h>
 
 class DebugDrawer: public btIDebugDraw
@@ -33,8 +34,6 @@ public:
 	void ToggleDebugFlag(int flag);
 
 protected:
-
 	int m_debugMode;
 };
-
 #endif

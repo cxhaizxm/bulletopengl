@@ -6,9 +6,9 @@
 // global pointer to our application object
 static BulletOpenGLApplication* g_pApp;
 
-// Various static functions that will be handed to FreeGLUT to be called
-// during various events (our callbacks). Each calls an equivalent function
-// in our (global) application object.
+/** Various static functions that will be handed to FreeGLUT to be called
+ during various events (our callbacks). Each calls an equivalent function
+ in our (global) application object. **/
 static void KeyboardCallback(unsigned char key, int x, int y)
 {
 	g_pApp->Keyboard(key, x, y);
@@ -62,7 +62,7 @@ int glutmain(int argc, char **argv, int width, int height, const char* title,
 	glutInitWindowSize(width, height);
 	glutCreateWindow(title);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
-	GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+			GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	// perform custom initialization our of application
 	g_pApp->Initialize();

@@ -17,7 +17,6 @@ void DebugDrawer::drawLine(const btVector3 &from, const btVector3 &to,
 void DebugDrawer::drawContactPoint(const btVector3 &pointOnB,
 		const btVector3 &normalOnB, btScalar distance, int lifeTime,
 		const btVector3 &color)
-
 {
 	// draws a line between two contact points
 	btVector3 const startPoint = pointOnB;
